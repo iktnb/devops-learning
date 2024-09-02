@@ -1,0 +1,30 @@
+name: Update Docker Compose
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Checkout helpers/docker-compose branch
+        run: git checkout helpers/docker-compose
+
+      - name: Copy docker-compose.yml from main branch
+        run: |
+          git checkout main
+          cp docker-compose.yml ../helpers/docker-compose/
+          git checkout helpers/docker-compose
+          git add docker-compose.yml
+          git commit -m "Update docker-compose.yml from main"
+          git push origin helpers/docker-compose
