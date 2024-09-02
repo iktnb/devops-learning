@@ -30,8 +30,8 @@ jobs:
           REPOSITORY: test
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker tag app:latest $REGISTRY/$REPOSITORY:latest
+          docker build -t $IMAGE_TAG .
+          docker tag $IMAGE_TAG:latest $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
 
       - name: Deploy to EC2
