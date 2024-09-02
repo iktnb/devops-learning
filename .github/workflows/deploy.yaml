@@ -39,11 +39,6 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
-          if [ -z "$INSTANCE_PUBLIC_DNS" ]; then
-            echo "Error: INSTANCE_PUBLIC_DNS is empty."
-            exit 1
-          fi
-
           # Deploy the Docker container to EC2
           ssh -i $EC2_SSH_KEY $EC2_USER@$EC2_PUBLIC_IP << 'EOF'
             # Update Docker
