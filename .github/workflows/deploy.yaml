@@ -34,12 +34,6 @@ jobs:
           docker tag $IMAGE_TAG:latest $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:latest
 
-      - name: Read docker-compose.yml
-        id: read-compose
-        run: |
-          cat docker-compose.yml | base64 | tee encoded-compose.txt
-          echo "::set-output name=compose_content::$(cat encoded-compose.txt)"
-
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -47,7 +41,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            echo "${{ steps.read-compose.outputs.compose_content }}" | base64 -d > ./app/docker-compose.yml
             cd ./app/
+            git checkout helpers/docker-compose
+            git pull
             docker compose pull
             docker compose up -d
