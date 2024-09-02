@@ -20,6 +20,7 @@ jobs:
       - name: Fetch helpers/docker-compose branch
         run: |
           git fetch origin helpers/docker-compose
+          git fetch origin main
 
       - name: Checkout and update docker-compose.yml
         run: |
