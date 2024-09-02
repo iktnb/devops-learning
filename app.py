@@ -87,7 +87,7 @@ def index():
     html = """
     <!doctype html>
     <title>Flask PostgreSQL App</title>
-    <h1>Enter data</h1>
+    <h1>Enter data here</h1>
     <form method=post>
       <input type=text name=content>
       <input type=submit value=Submit>
