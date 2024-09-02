@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: ./docker-compose.prod.yaml
-          target: ./app/docker-compose.yaml
+          target: ./app/docker-compose.prod.yaml
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
@@ -51,5 +51,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd ./app/
-            docker-compose pull
-            docker-compose up -d
+            docker-compose -f docker-compose.prod.yaml pull
+            docker-compose -f docker-compose.prod.yaml up -d
