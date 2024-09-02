@@ -47,7 +47,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             rm -rf ./app/
-            printf '%s' "${{ steps.read-compose.outputs.compose_content }}" > ./app/docker-compose.yml
+            mkdir ./app/
             cd ./app/
+            printf '%s' "${{ steps.read-compose.outputs.compose_content }}" > ./docker-compose.yml
             docker compose pull
             docker compose up -d
