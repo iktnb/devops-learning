@@ -12,7 +12,7 @@ services:
       - "5432:5432"
 
   web:
-    image: 024848481979.dkr.ecr.us-east-1.amazonaws.com/test:latest
+    image: 024848481979.dkr.ecr.us-east-1.amazonaws.com/test
     ports:
       - "80:80"
     depends_on:
