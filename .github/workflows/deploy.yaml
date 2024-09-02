@@ -30,9 +30,10 @@ jobs:
           REPOSITORY: test
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $IMAGE_TAG .
-          docker tag $IMAGE_TAG:latest $REGISTRY/$REPOSITORY:latest
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
