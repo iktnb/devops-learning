@@ -33,16 +33,9 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: Get EC2 Public DNS
-        id: get-ec2-dns
-        run: |
-          INSTANCE_PUBLIC_DNS=$(aws ec2 describe-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }} --query "Reservations[0].Instances[0].PublicDnsName" --output text)
-          echo "INSTANCE_PUBLIC_DNS=$INSTANCE_PUBLIC_DNS" >> $GITHUB_ENV
-          echo "Public DNS: $INSTANCE_PUBLIC_DNS"
-
       - name: Deploy to EC2
         env:
-          INSTANCE_PUBLIC_DNS: ${{ env.INSTANCE_PUBLIC_DNS }}
+          EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
@@ -52,7 +45,7 @@ jobs:
           fi
 
           # Deploy the Docker container to EC2
-          ssh -i $EC2_SSH_KEY $EC2_USER@$INSTANCE_PUBLIC_DNS << 'EOF'
+          ssh -i $EC2_SSH_KEY $EC2_USER@$EC2_PUBLIC_IP << 'EOF'
             # Update Docker
             cd ./app
             docker-compose down
