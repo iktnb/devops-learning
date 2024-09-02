@@ -18,7 +18,9 @@ jobs:
           git config user.email "github-actions@github.com"
 
       - name: Checkout helpers/docker-compose branch
-        run: git checkout helpers/docker-compose
+        run: |
+          git pull
+          git checkout helpers/docker-compose
 
       - name: Copy docker-compose.yml from main branch
         run: |
