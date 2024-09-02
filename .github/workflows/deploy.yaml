@@ -24,7 +24,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-
       - name: Build, tag, and push Docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -33,3 +32,20 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy to EC2
+        env:
+          EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          # Get the public DNS of the EC2 instance
+          INSTANCE_PUBLIC_DNS=$(aws ec2 describe-instances --instance-ids $EC2_INSTANCE_ID --query "Reservations[0].Instances[0].PublicDnsName" --output text)
+
+          # Deploy the Docker container to EC2
+          ssh -i $EC2_SSH_KEY $EC2_USER@$INSTANCE_PUBLIC_DNS << 'EOF'
+            # Update Docker
+            cd ./app
+            docker-compose down
+            docker-compose up -d
+          EOF

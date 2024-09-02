@@ -17,6 +17,7 @@ DB_PORT = "5432"
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
+
 def create_connection():
     retry_count = 5
     while retry_count > 0:
@@ -26,7 +27,7 @@ def create_connection():
                 user=DB_USER,
                 password=DB_PASS,
                 host=DB_HOST,
-                port=DB_PORT
+                port=DB_PORT,
             )
             return conn
         except OperationalError as e:
@@ -36,17 +37,20 @@ def create_connection():
     logging.error("Failed to connect to the database after multiple attempts")
     return None
 
+
 def create_table():
     conn = create_connection()
     if conn:
         try:
             with conn.cursor() as cur:
-                cur.execute("""
+                cur.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS entries (
                         id SERIAL PRIMARY KEY,
                         content TEXT NOT NULL
                     );
-                """)
+                """
+                )
                 conn.commit()
                 logging.info("Table 'entries' created successfully or already exists.")
         except Exception as e:
@@ -56,7 +60,9 @@ def create_table():
     else:
         logging.error("Connection to database failed, cannot create table.")
 
+
 create_table()
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -70,12 +76,12 @@ def index():
             cur.execute("INSERT INTO entries (content) VALUES (%s)", (content,))
             conn.commit()
         conn.close()
-        return redirect(url_for('index'))
-    
+        return redirect(url_for("index"))
+
     with conn.cursor() as cur:
         cur.execute("SELECT * FROM entries")
         entries = cur.fetchall()
-    
+
     conn.close()
 
     html = """
@@ -94,6 +100,7 @@ def index():
     </ul>
     """
     return render_template_string(html, entries=entries)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
