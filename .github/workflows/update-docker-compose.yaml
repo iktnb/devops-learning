@@ -17,16 +17,16 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Checkout helpers/docker-compose branch
+      - name: Fetch helpers/docker-compose branch
         run: |
-          git pull
-          git checkout helpers/docker-compose
+          git fetch origin helpers/docker-compose
 
-      - name: Copy docker-compose.yml from main branch
+      - name: Checkout and update docker-compose.yml
         run: |
-          git checkout main
-          cp -r docker-compose.yml ../helpers/docker-compose/
-          git checkout helpers/docker-compose
+          git checkout helpers/docker-compose -- docker-compose.yml
+
+      - name: Commit and push docker-compose.yml update
+        run: |
           git add docker-compose.yml
-          git commit -m "Update docker-compose.yml from main"
-          git push origin helpers/docker-compose
+          git commit -m "Update docker-compose.yml from helpers/docker-compose branch"
+          git push origin main
