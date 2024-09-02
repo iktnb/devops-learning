@@ -22,13 +22,17 @@ jobs:
           git fetch origin main
           git fetch origin helpers/docker-compose
 
-      - name: Checkout and update docker-compose.yml
+      - name: Checkout helpers/docker-compose branch
         run: |
           git checkout helpers/docker-compose
-          git checkout main -- docker-compose.yml
+
+      - name: Update docker-compose.yml from main branch
+        run: |
+          git checkout origin/main -- docker-compose.yml
+          git status  # Проверка статуса файлов
 
       - name: Commit and push docker-compose.yml update
         run: |
           git add docker-compose.yml
-          git commit -m "Update docker-compose.yml from main branch"
+          git commit -m "Update docker-compose.yml from main branch" || echo "No changes to commit"
           git push origin helpers/docker-compose

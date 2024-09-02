@@ -15,7 +15,7 @@ services:
   web:
     image: 024848481979.dkr.ecr.us-east-1.amazonaws.com/test:latest
     ports:
-      - "3000:80"
+      - "80:80"
     depends_on:
       - db
 
